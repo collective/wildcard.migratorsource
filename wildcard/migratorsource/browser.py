@@ -10,6 +10,10 @@ from AccessControl.User import UnrestrictedUser as BaseUnrestrictedUser
 scan()
 
 
+import logging
+logger = logging.getLogger('wildcard.migrator')
+
+
 class UnrestrictedUser(BaseUnrestrictedUser):
     """Unrestricted user that still has an id.
     """
@@ -35,4 +39,11 @@ class Exporter(BrowserView):
         migrator = getMigratorFromRequest(self.request)
 
         self.request.response.setHeader('Content-Type', 'application/json')
-        return json.dumps(migrator.get())
+        try:
+            path = '/'.join(migrator.obj.getPhysicalPath())
+        except:
+            path = repr(migrator.obj)
+        logger.info('gathering data for %s' % path)
+        data = migrator.get()
+        logger.info('finished gathering data for %s' % path)
+        return json.dumps(data)
