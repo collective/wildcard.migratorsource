@@ -43,7 +43,6 @@ class Exporter(BrowserView):
             path = '/'.join(migrator.obj.getPhysicalPath())
         except:
             path = repr(migrator.obj)
-        logger.info('gathering data for %s' % path)
+        logger.info('Running %s for %s' % (migrator.title, path))
         data = migrator.get()
-        logger.info('finished gathering data for %s' % path)
         return json.dumps(data)
