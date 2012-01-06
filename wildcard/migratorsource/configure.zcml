@@ -11,5 +11,11 @@
         class=".browser.Exporter"
         permission="zope2.View"
       />
+    <browser:page
+        name="migrator-exportfield"
+        for="Products.CMFPlone.interfaces.siteroot.IPloneSiteRoot"
+        class=".browser.ServeFileField"
+        permission="zope2.View"
+      />
   
 </configure>

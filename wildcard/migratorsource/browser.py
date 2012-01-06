@@ -6,6 +6,7 @@ from wildcard.migrator import scan
 from wildcard.migrator.utils import getMigratorFromRequest
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.User import UnrestrictedUser as BaseUnrestrictedUser
+from wildcard.migrator.utils import safeTraverse
 
 scan()
 
@@ -46,3 +47,18 @@ class Exporter(BrowserView):
         logger.info('Running %s for %s' % (migrator.title, path))
         data = migrator.get()
         return json.dumps(data)
+
+
+class ServeFileField(BrowserView):
+
+    def __call__(self):
+        field = self.request.get('field')
+        context = safeTraverse(self.context, self.request.get('path'))
+        field = context.getField(field)
+        filename = field.getFilename(context)
+        if not filename:
+            filename = context.getId()
+        resp = self.request.response
+        resp.setHeader('filename', filename)
+        resp.setHeader('Content-type', field.getContentType(context))
+        return field.download(context)
