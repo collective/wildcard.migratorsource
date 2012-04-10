@@ -40,11 +40,7 @@ class Exporter(BrowserView):
         migrator = getMigratorFromRequest(self.request)
 
         self.request.response.setHeader('Content-Type', 'application/json')
-        try:
-            path = '/'.join(migrator.obj.getPhysicalPath())
-        except:
-            path = repr(migrator.obj)
-        logger.info('Running %s for %s' % (migrator.title, path))
+        logger.info('Running %s for %s' % (migrator.title, repr(migrator.obj)))
         data = migrator.get()
         return json.dumps(data)
 
